@@ -1,6 +1,7 @@
 package student.adventure;
 
 import org.hamcrest.CoreMatchers;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,7 +10,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class GameEngineTest {
     GameEngine gamePlayTester;

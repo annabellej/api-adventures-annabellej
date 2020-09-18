@@ -1,6 +1,10 @@
 package student.adventure;
 
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Represents the map of a game with all of the Rooms.

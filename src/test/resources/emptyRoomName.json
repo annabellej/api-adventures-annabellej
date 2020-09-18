@@ -1,0 +1,145 @@
+{
+	"allRooms": [{
+		"roomName": "Holding Room",
+		"roomDescription": "You are surrounded by blank concrete walls.",
+		"roomNumber": 1,
+		"endRoom": false,
+		"itemsVisible": [
+			"chair",
+			"rope"
+		],
+		"possibleDirections": [
+			"East",
+			"South"
+		],
+		"possibleRooms": [
+			2, 
+			4
+		]
+	}, {
+		"roomName": "",
+		"roomDescription": "A boring concrete hallway. Not much to see here.",
+		"roomNumber": 2,
+		"endRoom": false,
+		"possibleDirections": [
+			"East",
+			"West",
+			"South"
+		],
+		"possibleRooms": [
+			3,
+			1,
+			5
+		]
+	}, {
+		"roomName": "Interrogation Room",
+		"roomDescription": "A pane of glass separates you from a table and chairs. Cameras are fixed in the corners. A lone microphone sits on the table.",
+		"roomNumber": 3,
+		"endRoom": false,
+		"itemsVisible": [
+			"equipment",
+			"water"
+		],
+		"possibleDirections": [
+			"West",
+			"South"
+		],
+		"possibleRooms": [
+			2,
+			6
+		]
+	}, {
+		"roomName": "Storage Closet",
+		"roomDescription": "You are in a tiny room. Cleaning supplies and other tools surround you. There are no other doors.",
+		"roomNumber": 4,
+		"endRoom": false,
+		"itemsVisible": [
+			"bleach",
+			"buckets",
+			"key"
+		],
+		"possibleDirections": [
+			"North"
+		],
+		"possibleRooms": [
+			1
+		]
+	}, {
+		"roomName": "Laboratory",
+		"roomDescription": "You seem to have found a lab. What kind of research goes on here? You decide that you'd rather not know.",
+		"roomNumber": 5,
+		"endRoom": false,
+		"itemsVisible": [
+			"chemicals",
+			"microscope"
+		],
+		"possibleDirections": [
+			"North",
+			"South",
+			"East"
+		],
+		"possibleRooms": [
+			2,
+			8,
+			6
+		]
+	}, {
+		"roomName": "Server Rooms",
+		"roomDescription": "You see rows of servers, lights blinking in the semi-darkness of this room. Why does this place have a server room? Who knows.",
+		"roomNumber": 6,
+		"endRoom": false,
+		"itemsVisible": [
+			"servers",
+			"computer"
+		],
+		"possibleDirections": [
+			"North",
+			"South",
+			"West"
+		],
+		"possibleRooms": [
+			3,
+			9,
+			5
+		]
+	} ,{
+		"roomName": "Another Holding Room",
+		"roomDescription": "You come across another holding room. There are cobwebs in the corner.",
+		"roomNumber": 7,
+		"endRoom": false,
+		"possibleDirections": [
+			"West"
+		],
+		"possibleRooms": [
+			8
+		]
+	} ,{
+		"roomName": "Blocked Off Stairwell",
+		"roomDescription": "A staircase leading down is roped off. A barred window is above the stairs.",
+		"roomNumber": 8,
+		"endRoom": false,
+		"possibleDirections": [
+			"North",
+			"West",
+			"East"
+		],
+		"possibleRooms": [
+			5,
+			7,
+			9
+		]
+	} ,{
+		"roomName": "Exit Hallway",
+		"roomDescription": "A locked door leads outside. Miraculously, the guards seem to be on their lunch break.",
+		"roomNumber": 9,
+		"endRoom": true,
+		"possibleDirections": [
+			"North",
+			"West"
+		],
+		"possibleRooms": [
+			6,
+			8
+		]
+	}]
+}

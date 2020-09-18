@@ -11,39 +11,15 @@ import java.io.InvalidObjectException;
  * Object handling reading in data from any JSON file to a game map.
  *
  * @author  Annabelle Ju
- * @version 9/14/2020
+ * @version 9/17/2020
  */
 public class MapDataReader {
-    private String fileName;
-
-    public MapDataReader() {
-        fileName = null;
-    }
-
-    /**
-     * Constructor for objects of class JSONDataReader.
-     * Given the Object for which to deserialize, initiates this data reader accordingly.
-     *
-     * @param fileName the Object for which to deserialize a JSON file.
-     */
-    public MapDataReader(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
     /**
      * Given the name of a JSON file, deserializes the file if it's valid.
      *
      * @return the Object containing the deserialized data.
      */
-    public GameMap deserializeFile() throws IOException {
+    public static GameMap deserializeFile(String fileName) throws IOException {
         //error check: given file name is invalid
         if (fileName == null || fileName.length() == 0) {
             throw new IllegalArgumentException("Invalid file name.");

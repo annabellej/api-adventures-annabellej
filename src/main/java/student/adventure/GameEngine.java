@@ -12,6 +12,8 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.NoSuchElementException;
 
+import static student.adventure.MapDataReader.deserializeFile;
+
 /**
  * GameEngine runs the adventure game Kidnapped! by taking in user input
  * and responding with feedback to progress in the game.
@@ -41,8 +43,7 @@ public class GameEngine {
 
         playerInventory = new ArrayList<>();
 
-        MapDataReader dataReader = new MapDataReader(fileName);
-        gameMap = dataReader.deserializeFile();
+        gameMap = deserializeFile(fileName);
         roomNumbersToIndices = gameMap.mapRoomNumbersToIndex();
         currentRoom = gameMap.retrieveRoomAt(0);
 
@@ -61,8 +62,7 @@ public class GameEngine {
 
         playerInventory = new ArrayList<>();
 
-        MapDataReader dataReader = new MapDataReader(fileName);
-        gameMap = dataReader.deserializeFile();
+        gameMap = deserializeFile(fileName);
         roomNumbersToIndices = gameMap.mapRoomNumbersToIndex();
         currentRoom = gameMap.retrieveRoomAt(0);
 

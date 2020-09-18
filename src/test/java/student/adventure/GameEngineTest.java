@@ -137,7 +137,7 @@ public class GameEngineTest {
         String gameOutput = outputStream.toString();
         assertThat(gameOutput, CoreMatchers.containsString("You've dropped: potato."));
         assertEquals(-1, gamePlayTester.getPlayerInventory().indexOf("potato"));
-        assertTrue(gamePlayTester.getCurrentRoom().getItemsVisible().contains("potato"));
+        assertTrue(gamePlayTester.getCurrentRoom().containsItem("potato"));
     }
 
     @Test

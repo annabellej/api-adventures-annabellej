@@ -93,6 +93,6 @@ public class DataReaderTest {
     @Test
     public void testValidDataFile() throws IOException {
         dataReaderTester.setFileName("src/test/resources/fullValidGame.json");
-        assertEquals(9, dataReaderTester.deserializeFile().getAllRooms().size());
+        assertEquals(9, dataReaderTester.deserializeFile().findMapSize());
     }
 }

@@ -10,7 +10,7 @@ import java.util.HashSet;
  * Represents the map of a game with all of the Rooms.
  *
  * @author  Annabelle Ju
- * @version 9/14/2020
+ * @version 9/17/2020
  */
 public class GameMap {
     private List<Room> allRooms;
@@ -23,12 +23,37 @@ public class GameMap {
         allRooms = new ArrayList<>();
     }
 
-    public List<Room> getAllRooms() {
-        return allRooms;
-    }
-
     public void setAllRooms(List<Room> allRooms) {
         this.allRooms = allRooms;
+    }
+
+    /**
+     * Calculates the size of this map; the total number of rooms.
+     *
+     * @return the size of this game map.
+     */
+    public int findMapSize() {
+        return allRooms.size();
+    }
+
+    /**
+     * Gets the room at the given index in the list of all rooms.
+     *
+     * @param roomIndex the index of the room to find.
+     *
+     * @return the room at the given index.
+     */
+    public Room retrieveRoomAt(int roomIndex) {
+        return allRooms.get(roomIndex);
+    }
+
+    /**
+     * Finds the index of a given room in the map.
+     *
+     * @return the index of the given room in the list of all rooms.
+     */
+    public int indexOfRoom(Room room) {
+        return allRooms.indexOf(room);
     }
 
     /**

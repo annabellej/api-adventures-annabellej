@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
  * Custom game feature: print history of player's visited rooms.
  *
  * @author  Annabelle Ju
- * @version 9/14/2020
+ * @version 9/17/2020
  */
 public class GameEngine {
     private PrintStream gameOutputStream;
@@ -44,7 +44,7 @@ public class GameEngine {
         MapDataReader dataReader = new MapDataReader(fileName);
         gameMap = dataReader.deserializeFile();
         roomNumbersToIndices = gameMap.mapRoomNumbersToIndex();
-        currentRoom = gameMap.getAllRooms().get(0);
+        currentRoom = gameMap.retrieveRoomAt(0);
 
         gameEnded = false;
         orderedVisitedRooms = new ArrayList<>();
@@ -64,7 +64,7 @@ public class GameEngine {
         MapDataReader dataReader = new MapDataReader(fileName);
         gameMap = dataReader.deserializeFile();
         roomNumbersToIndices = gameMap.mapRoomNumbersToIndex();
-        currentRoom = gameMap.getAllRooms().get(0);
+        currentRoom = gameMap.retrieveRoomAt(0);
 
         gameEnded = false;
         orderedVisitedRooms = new ArrayList<>();
@@ -151,7 +151,7 @@ public class GameEngine {
         gameOutputStream.println("Here's a quick history of your room traversal: \n");
 
         for (int roomIndex: orderedVisitedRooms) {
-            gameOutputStream.println(gameMap.getAllRooms().get(roomIndex).getRoomName());
+            gameOutputStream.println(gameMap.retrieveRoomAt(roomIndex).getRoomName());
         }
     }
 
@@ -218,20 +218,20 @@ public class GameEngine {
      * @param direction the direction to move in.
      */
     private void changeRooms(Direction direction) {
-        int directionIndex = currentRoom.getPossibleDirections().indexOf(direction);
+        int directionIndex = currentRoom.findIndexOfDirection(direction);
 
         if (directionIndex == -1) {
             gameOutputStream.println("\n" + "I can't go " + direction.name() + ". Try again: \n");
             return;
         }
 
-        int newRoomNumber = currentRoom.getPossibleRooms().get(directionIndex);
+        int newRoomNumber = currentRoom.findPossibleRoomNumber(directionIndex);
         int newRoomIndex = roomNumbersToIndices.get(newRoomNumber);
 
-        currentRoom = gameMap.getAllRooms().get(newRoomIndex);
+        currentRoom = gameMap.retrieveRoomAt(newRoomIndex);
 
         gameOutputStream.println("\n" + "You have moved to: " + currentRoom.getRoomName() + "." + "\n");
-        orderedVisitedRooms.add(gameMap.getAllRooms().indexOf(currentRoom));
+        orderedVisitedRooms.add(gameMap.indexOfRoom(currentRoom));
 
         if (currentRoom.isEndRoom()) {
             if (playerInventory.contains("key")) {
@@ -251,7 +251,7 @@ public class GameEngine {
      * @param itemName the item the player wants to take.
      */
     private void takeItem(String itemName) {
-        if (!currentRoom.getItemsVisible().contains(itemName)) {
+        if (!currentRoom.containsItem(itemName)) {
             gameOutputStream.println("\n" + "There is no " + itemName + " in the room.");
             return;
         }
@@ -282,7 +282,7 @@ public class GameEngine {
 
         playerInventory.remove(itemName);
 
-        if (currentRoom.getItemsVisible().contains(itemName)) {
+        if (currentRoom.containsItem(itemName)) {
             gameOutputStream.println("\n" + "The item " + itemName + " is already in this room!");
             return;
         }

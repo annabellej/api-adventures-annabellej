@@ -8,7 +8,7 @@ import java.util.List;
  * A room can either be a normal room or the end room of the game.
  *
  * @author  Annabelle Ju
- * @version 9/14/2020
+ * @version 9/17/2020
  */
 public class Room {
     private String roomName;
@@ -48,18 +48,6 @@ public class Room {
 
     public boolean isEndRoom() {
         return endRoom;
-    }
-
-    public List<String> getItemsVisible() {
-        return itemsVisible;
-    }
-
-    public List<Direction> getPossibleDirections() {
-        return possibleDirections;
-    }
-
-    public List<Integer> getPossibleRooms() {
-        return possibleRooms;
     }
 
     //Setters:
@@ -108,6 +96,42 @@ public class Room {
      */
     public void removeItemFromRoom(String itemName) {
         itemsVisible.remove(itemName);
+    }
+
+    /**
+     * Determines the index of a given direction in this room's list of
+     * possible directions.
+     *
+     * @param direction the given direction to search for.
+     *
+     * @return the index of the given direction in the list of possible directions.
+     */
+    public int findIndexOfDirection(Direction direction) {
+        return possibleDirections.indexOf(direction);
+    }
+
+    /**
+     * Determines the room number given its index in the list of
+     * possible rooms to move to for this room.
+     *
+     * @param roomNumberIndex the index of the room number to retrieve.
+     *
+     * @return the room number corresponding to the given index.
+     */
+    public int findPossibleRoomNumber(int roomNumberIndex) {
+        return possibleRooms.get(roomNumberIndex);
+    }
+
+    /**
+     * Determines whether this room contains a given item.
+     *
+     * @param itemName the name of the item to check.
+     *
+     * @return true  if this room contains this item, else
+     *         false if this room doesn't contain this item.
+     */
+    public boolean containsItem(String itemName) {
+        return itemsVisible.contains(itemName);
     }
 
     /**

@@ -31,6 +31,7 @@ public class GameEngine {
     private Room currentRoom;
     private boolean gameEnded;
     private List<Integer> orderedVisitedRooms; //list of the indexes of player's visited rooms
+    private String playerName; //inputted name of this game's player
 
     /**
      * Constructor for objects of class GameEngine.
@@ -41,6 +42,7 @@ public class GameEngine {
     public GameEngine(String fileName) throws IOException {
         gameOutputStream = System.out;
 
+        playerName = "";
         playerInventory = new ArrayList<>();
 
         gameMap = deserializeFile(fileName);
@@ -60,6 +62,7 @@ public class GameEngine {
     public GameEngine(String fileName, OutputStream gameOutputStream) throws IOException {
         this.gameOutputStream = new PrintStream(gameOutputStream);
 
+        playerName = "";
         playerInventory = new ArrayList<>();
 
         gameMap = deserializeFile(fileName);
@@ -70,10 +73,6 @@ public class GameEngine {
         orderedVisitedRooms = new ArrayList<>();
     }
 
-    public List<String> getPlayerInventory() {
-        return playerInventory;
-    }
-
     public boolean isGameEnded() {
         return gameEnded;
     }
@@ -82,8 +81,41 @@ public class GameEngine {
         return currentRoom;
     }
 
-    public List<Integer> getOrderedVisitedRooms() {
-        return orderedVisitedRooms;
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    /**
+     * Determines the size of the player's inventory, aka how many items
+     * the player currently has.
+     *
+     * @return the number of items in the player's inventory.
+     */
+    public int findSizeOfInventory() {
+        return playerInventory.size();
+    }
+
+    /**
+     * Determines if the player's inventory contains a given item.
+     *
+     * @param itemName the name of the item to search for.
+     *
+     * @return true  if the player's inventory contains this item, else
+     *         false if the inventory does not contain the item.
+     */
+    public boolean inventoryContains(String itemName) {
+        return playerInventory.contains(itemName);
+    }
+
+    /**
+     * Retrieves the room number of a given visited room.
+     *
+     * @param roomIndex the index of the room to retrieve.
+     *
+     * @return the room number of a given visited room.
+     */
+    public int findVisitedRoomNumber(int roomIndex) {
+        return orderedVisitedRooms.get(roomIndex);
     }
 
     /**

@@ -30,7 +30,7 @@ public class GameEngineTest {
     //Tests for correct initial game settings
     @Test
     public void testEmptyInitialInventory() {
-        assertEquals(0, gamePlayTester.getPlayerInventory().size());
+        assertEquals(0, gamePlayTester.findSizeOfInventory());
     }
 
     @Test
@@ -100,7 +100,7 @@ public class GameEngineTest {
 
         String gameOutput = outputStream.toString();
         assertThat(gameOutput, CoreMatchers.containsString("You have picked up: chair."));
-        assertTrue(gamePlayTester.getPlayerInventory().contains("chair"));
+        assertTrue(gamePlayTester.inventoryContains("chair"));
     }
 
     @Test
@@ -136,7 +136,7 @@ public class GameEngineTest {
 
         String gameOutput = outputStream.toString();
         assertThat(gameOutput, CoreMatchers.containsString("You've dropped: potato."));
-        assertEquals(-1, gamePlayTester.getPlayerInventory().indexOf("potato"));
+        assertFalse(gamePlayTester.inventoryContains("potato"));
         assertTrue(gamePlayTester.getCurrentRoom().containsItem("potato"));
     }
 
@@ -150,7 +150,7 @@ public class GameEngineTest {
 
         String gameOutput = outputStream.toString();
         assertThat(gameOutput, CoreMatchers.containsString("The item chair is already in this room!"));
-        assertEquals(-1, gamePlayTester.getPlayerInventory().indexOf("chair"));
+        assertFalse(gamePlayTester.inventoryContains("chair"));
     }
 
     @Test
@@ -291,7 +291,7 @@ public class GameEngineTest {
         gamePlayTester.runGame(inputStream);
 
         String gameOutput = outputStream.toString();
-        assertTrue(gamePlayTester.getOrderedVisitedRooms().get(0) == 3);
-        assertTrue(gamePlayTester.getOrderedVisitedRooms().get(1) == 0);
+        assertEquals(3, gamePlayTester.findVisitedRoomNumber(0));
+        assertEquals(0, gamePlayTester.findVisitedRoomNumber(1));
     }
 }

@@ -30,7 +30,7 @@ public class GameEngineTest {
     //Tests for correct initial game settings
     @Test
     public void testEmptyInitialInventory() {
-        assertEquals(0, gamePlayTester.findSizeOfInventory());
+        assertEquals(0, gamePlayTester.getGamePlayer().findSizeOfInventory());
     }
 
     @Test
@@ -100,7 +100,7 @@ public class GameEngineTest {
 
         String gameOutput = outputStream.toString();
         assertThat(gameOutput, CoreMatchers.containsString("You have picked up: chair."));
-        assertTrue(gamePlayTester.inventoryContains("chair"));
+        assertTrue(gamePlayTester.getGamePlayer().inventoryContains("chair"));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class GameEngineTest {
         playerInput = "take chair" + "\n" + "quit" + "\n";
         inputStream = new ByteArrayInputStream(playerInput.getBytes());
 
-        gamePlayTester.addToInventory("chair");
+        gamePlayTester.getGamePlayer().addToInventory("chair");
         gamePlayTester.runGame(inputStream);
 
         String gameOutput = outputStream.toString();
@@ -131,12 +131,12 @@ public class GameEngineTest {
         playerInput = "drop potato" + "\n" + "quit" + "\n";
         inputStream = new ByteArrayInputStream(playerInput.getBytes());
 
-        gamePlayTester.addToInventory("potato");
+        gamePlayTester.getGamePlayer().addToInventory("potato");
         gamePlayTester.runGame(inputStream);
 
         String gameOutput = outputStream.toString();
         assertThat(gameOutput, CoreMatchers.containsString("You've dropped: potato."));
-        assertFalse(gamePlayTester.inventoryContains("potato"));
+        assertFalse(gamePlayTester.getGamePlayer().inventoryContains("potato"));
         assertTrue(gamePlayTester.getCurrentRoom().containsItem("potato"));
     }
 
@@ -145,12 +145,12 @@ public class GameEngineTest {
         playerInput = "drop chair" + "\n" + "quit" + "\n";
         inputStream = new ByteArrayInputStream(playerInput.getBytes());
 
-        gamePlayTester.addToInventory("chair");
+        gamePlayTester.getGamePlayer().addToInventory("chair");
         gamePlayTester.runGame(inputStream);
 
         String gameOutput = outputStream.toString();
         assertThat(gameOutput, CoreMatchers.containsString("The item chair is already in this room!"));
-        assertFalse(gamePlayTester.inventoryContains("chair"));
+        assertFalse(gamePlayTester.getGamePlayer().inventoryContains("chair"));
     }
 
     @Test

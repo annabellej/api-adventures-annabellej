@@ -26,12 +26,14 @@ import static student.adventure.MapDataReader.deserializeFile;
 public class GameEngine {
     private PrintStream gameOutputStream;
     private GameMap gameMap;
-    private List<String> playerInventory;
-    private Map<Integer, Integer> roomNumbersToIndices; //link room number to index in room list
     private Room currentRoom;
+    private Player gamePlayer;
+
     private boolean gameEnded;
-    private List<Integer> orderedVisitedRooms; //list of the indexes of player's visited rooms
-    private String playerName; //inputted name of this game's player
+
+    private Map<Integer, Integer> roomNumbersToIndices; //link room number to index in room list
+    private List<Integer> orderedVisitedRooms;   //list of the indexes of player's visited rooms
+
 
     /**
      * Constructor for objects of class GameEngine.
@@ -42,8 +44,7 @@ public class GameEngine {
     public GameEngine(String fileName) throws IOException {
         gameOutputStream = System.out;
 
-        playerName = "";
-        playerInventory = new ArrayList<>();
+        gamePlayer = new Player();
 
         gameMap = deserializeFile(fileName);
         roomNumbersToIndices = gameMap.mapRoomNumbersToIndex();
@@ -62,8 +63,7 @@ public class GameEngine {
     public GameEngine(String fileName, OutputStream gameOutputStream) throws IOException {
         this.gameOutputStream = new PrintStream(gameOutputStream);
 
-        playerName = "";
-        playerInventory = new ArrayList<>();
+        gamePlayer = new Player();
 
         gameMap = deserializeFile(fileName);
         roomNumbersToIndices = gameMap.mapRoomNumbersToIndex();
@@ -81,30 +81,8 @@ public class GameEngine {
         return currentRoom;
     }
 
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    /**
-     * Determines the size of the player's inventory, aka how many items
-     * the player currently has.
-     *
-     * @return the number of items in the player's inventory.
-     */
-    public int findSizeOfInventory() {
-        return playerInventory.size();
-    }
-
-    /**
-     * Determines if the player's inventory contains a given item.
-     *
-     * @param itemName the name of the item to search for.
-     *
-     * @return true  if the player's inventory contains this item, else
-     *         false if the inventory does not contain the item.
-     */
-    public boolean inventoryContains(String itemName) {
-        return playerInventory.contains(itemName);
+    public Player getGamePlayer() {
+        return gamePlayer;
     }
 
     /**
@@ -116,15 +94,6 @@ public class GameEngine {
      */
     public int findVisitedRoomNumber(int roomIndex) {
         return orderedVisitedRooms.get(roomIndex);
-    }
-
-    /**
-     * Adds an item to this player's inventory.
-     *
-     * @param itemName the item to be added.
-     */
-    public void addToInventory(String itemName) {
-        playerInventory.add(itemName);
     }
 
     /**
@@ -266,7 +235,7 @@ public class GameEngine {
         orderedVisitedRooms.add(gameMap.indexOfRoom(currentRoom));
 
         if (currentRoom.isEndRoom()) {
-            if (playerInventory.contains("key")) {
+            if (gamePlayer.inventoryContains("key")) {
                 gameEnded = true;
                 gameOutputStream.println("\n" + "Congrats! You escaped." + "\n");
             }
@@ -292,8 +261,8 @@ public class GameEngine {
 
         gameOutputStream.println("\n" + "You have picked up: " + itemName + "." + "\n");
 
-        if (!playerInventory.contains(itemName)) {
-            addToInventory(itemName);
+        if (!gamePlayer.inventoryContains(itemName)) {
+            gamePlayer.addToInventory(itemName);
         }
         else {
             gameOutputStream.println("\n" + "You already have " + itemName + "!" + "\n");
@@ -307,12 +276,12 @@ public class GameEngine {
      * @param itemName the item the player wants to drop.
      */
     private void dropItem(String itemName) {
-        if (!playerInventory.contains(itemName)) {
+        if (!gamePlayer.inventoryContains(itemName)) {
             gameOutputStream.println("\n" + "You don't have " + itemName + "!");
             return;
         }
 
-        playerInventory.remove(itemName);
+        gamePlayer.removeFromInventory(itemName);
 
         if (currentRoom.containsItem(itemName)) {
             gameOutputStream.println("\n" + "The item " + itemName + " is already in this room!");

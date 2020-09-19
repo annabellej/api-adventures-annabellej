@@ -21,7 +21,7 @@ import static student.adventure.MapDataReader.deserializeFile;
  * Custom game feature: print history of player's visited rooms.
  *
  * @author  Annabelle Ju
- * @version 9/17/2020
+ * @version 9/18/2020
  */
 public class GameEngine {
     private PrintStream gameOutputStream;

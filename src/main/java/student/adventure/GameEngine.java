@@ -1,16 +1,10 @@
 package student.adventure;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.StringTokenizer;
-import java.util.NoSuchElementException;
+import student.server.AdventureState;
+import student.server.GameStatus;
+import student.server.Command;
 
 import static student.adventure.MapDataReader.deserializeFile;
 
@@ -21,29 +15,30 @@ import static student.adventure.MapDataReader.deserializeFile;
  * Custom game feature: print history of player's visited rooms.
  *
  * @author  Annabelle Ju
- * @version 9/18/2020
+ * @version 9/19/2020
  */
 public class GameEngine {
-    private PrintStream gameOutputStream;
+    private int gameID;
+    private GameStatus currentGameState;
+
     private GameMap gameMap;
     private Room currentRoom;
     private Player gamePlayer;
-
     private boolean gameEnded;
 
     private Map<Integer, Integer> roomNumbersToIndices; //link room number to index in room list
     private List<Integer> orderedVisitedRooms;   //list of the indexes of player's visited rooms
-
 
     /**
      * Constructor for objects of class GameEngine.
      * Assumes the game prints messages to the console (System.out).
      * Initiates this game map from a given file.
      * Player always starts with no items in room number 1.
+     *
+     * Code for generating random game ID from 0 to max int value derived from:
+     * https://stackoverflow.com/questions/31635157/generating-a-random-int/31635240
      */
-    public GameEngine(String fileName) throws IOException {
-        gameOutputStream = System.out;
-
+    public GameEngine(String fileName) {
         gamePlayer = new Player();
 
         gameMap = deserializeFile(fileName);
@@ -52,108 +47,92 @@ public class GameEngine {
 
         gameEnded = false;
         orderedVisitedRooms = new ArrayList<>();
-    }
 
-    /**
-     * Constructor for objects of class GameEngine.
-     * Game prints messages to a given PrintStream.
-     * Initiates this game map from a given file.
-     * Player always starts with no items in room number 1.
-     */
-    public GameEngine(String fileName, OutputStream gameOutputStream) throws IOException {
-        this.gameOutputStream = new PrintStream(gameOutputStream);
+        //Create map of command options
+        Map<String, List<String>> commandOptions = new HashMap<>();
+        commandOptions.put("examine", new ArrayList<>(Arrays.asList(
+                           "examine", "inspect", "investigate")));
+        commandOptions.put("quit", new ArrayList<>(Arrays.asList(
+                           "quit", "exit", "bye")));
+        commandOptions.put("go", new ArrayList<>(Arrays.asList(
+                           "go", "move", "proceed", "walk")));
+        commandOptions.put("take", new ArrayList<>(Arrays.asList(
+                           "take", "remove", "grab")));
+        commandOptions.put("drop", new ArrayList<>(Arrays.asList(
+                           "drop", "leave", "release")));
 
-        gamePlayer = new Player();
-
-        gameMap = deserializeFile(fileName);
-        roomNumbersToIndices = gameMap.mapRoomNumbersToIndex();
-        currentRoom = gameMap.retrieveRoomAt(0);
-
-        gameEnded = false;
-        orderedVisitedRooms = new ArrayList<>();
-    }
-
-    public boolean isGameEnded() {
-        return gameEnded;
-    }
-
-    public Room getCurrentRoom() {
-        return currentRoom;
+        gameID = new Random().nextInt(Integer.MAX_VALUE);
+        currentGameState = new GameStatus(false, gameID, writeGameIntro(), "", "",
+                           new AdventureState(), commandOptions);
     }
 
     public Player getGamePlayer() {
         return gamePlayer;
     }
 
-    /**
-     * Retrieves the room number of a given visited room.
-     *
-     * @param roomIndex the index of the room to retrieve.
-     *
-     * @return the room number of a given visited room.
-     */
-    public int findVisitedRoomNumber(int roomIndex) {
-        return orderedVisitedRooms.get(roomIndex);
+    public int getGameID() {
+        return gameID;
+    }
+
+    public GameStatus getCurrentGameState() {
+        return currentGameState;
     }
 
     /**
-     * Begins and runs an adventure game, assuming the input stream used by the player
-     * is the console.
-     */
-    public void runGame() {
-        runGame(System.in);
-    }
-
-    /**
-     * Begins and runs an adventure game by prompting player for moves through a given input
-     * stream, updating game parameters accordingly, and responding to the player's
-     * actions.
+     * Takes a step in the game given a command from the player.
      *
-     * Game ends when the end room has been found by the player and the player found the key
-     * or if the player quits the game.
+     * @param playerCommand the command inputted by the player.
+     *
+     * @return the status of this game after the player's action.
      */
-    public void runGame(InputStream inputStream) {
-        printGameIntro();
-
-        Scanner scanner = new Scanner(inputStream);
-
-        while (!gameEnded)
-        {
-            gameOutputStream.println("\n" + currentRoom.toString());
-            gameOutputStream.print("What action would you like to take?" + "\n" + "> ");
-
-            performAction(scanner.nextLine());
-        }
-
-        printGameOutro();
+    public GameStatus takeGameStep(Command playerCommand) {
+        //IMPLEMENT
+        return null;
     }
 
     /**
-     * Prints a welcome message to the game for the player.
+     * Writes a welcome message for the player.
      * Includes the game's backstory, rules, etc.
+     *
+     * @return the String welcome message.
      */
-    private void printGameIntro() {
-        gameOutputStream.println("Welcome to Kidnapped!");
-        gameOutputStream.println("You have been mysteriously abducted by someone--" +
+    private String writeGameIntro() {
+        return "Welcome to Kidnapped!" + "\n" +
+                "You have been mysteriously abducted by someone--" +
                 "is it the government? The russian mob? Who knows. " + "\n" +
                 "Either way, you have awoken in a strange room " +
                 "and must now find your way out of this compound. " + "\n" +
                 "Luckily, the compound has convenient windows for ceilings, " +
                 "allowing you to navigate by the sun by moving " +
-                "north, south, east, or west through the compound's rooms.");
+                "north, south, east, or west through the compound's rooms.";
     }
 
     /**
-     * Prints the game outro for the player, including the list of visited rooms
-     * in order of when the player visited them.
+     * Writes the prompt for the player's next move: provides them with current room
+     * details and prompt for an action.
+     *
+     * @return the String player prompt.
      */
-    private void printGameOutro() {
-        gameOutputStream.println("\n" + "Thanks for playing!");
-        gameOutputStream.println("Here's a quick history of your room traversal: \n");
+    private String writePlayerPrompter() {
+        return "\n" + currentRoom.toString() + "\n" +
+               "What action would you like to take?" + "\n" + "> ";
+    }
+
+    /**
+     * Writes the game outro for the player, including the list of visited rooms
+     * in order of when the player visited them.
+     *
+     * @return the String outro message.
+     */
+    private String writeGameOutro() {
+        String gameOutro = "\n" + "Thanks for playing!" +
+                           "Here's a quick history of your room traversal: \n";
 
         for (int roomIndex: orderedVisitedRooms) {
-            gameOutputStream.println(gameMap.retrieveRoomAt(roomIndex).getRoomName());
+            gameOutro += gameMap.retrieveRoomAt(roomIndex).getRoomName() + "\n";
         }
+
+        return gameOutro;
     }
 
     /**
@@ -161,8 +140,10 @@ public class GameEngine {
      * and perform that action, updating the game parameters accordingly.
      *
      * @param playerCommand the command inputted by the player.
+     *
+     * @return the String game response to the given player action.
      */
-    private void performAction(String playerCommand) {
+    private String performAction(String playerCommand) {
         StringTokenizer tokenizer = new StringTokenizer(playerCommand);
 
         String playerAction = tokenizer.nextToken().toLowerCase();
@@ -170,44 +151,40 @@ public class GameEngine {
         switch (playerAction) {
             case "quit": case "exit": {
                 gameEnded = true;
-                break;
+                return "\n" + "Quitting game..." + "\n";
             }
             case "examine": {
-                gameOutputStream.println("\n" + "Examining this room..." + "\n");
-                break;
+                return "\n" + "Examining this room..." + "\n";
             }
             case "move": case "go": {
                 try {
                     String playerDirection = tokenizer.nextToken().toLowerCase();
-                    changeRooms(Direction.valueOf(playerDirection));
+                    return changeRooms(Direction.valueOf(playerDirection));
                 }
                 catch (NoSuchElementException e) {
-                    gameOutputStream.println("\n" + "Please include a direction to move in. Try again:");
+                    return "\n" + "Please include a direction to move in. Try again:";
                 }
-                break;
             }
             case "snatch": case "grab": case "take": {
                 try {
                     String itemToTake = tokenizer.nextToken().toLowerCase();
-                    takeItem(itemToTake);
+                    return takeItem(itemToTake);
                 }
                 catch (NoSuchElementException e) {
-                    gameOutputStream.println("\n" + "Please include an item to take. Try again: ");
+                    return "\n" + "Please include an item to take. Try again: ";
                 }
-                break;
             }
             case "put": case "leave": case "drop": {
                 try {
                     String itemToDrop = tokenizer.nextToken().toLowerCase();
-                    dropItem(itemToDrop);
+                    return dropItem(itemToDrop);
                 }
                 catch (NoSuchElementException e) {
-                    gameOutputStream.println("\n" + "Please include an item to drop. Try again:");
+                    return "\n" + "Please include an item to drop. Try again:";
                 }
-                break;
             }
             default: {
-                gameOutputStream.println("\n" + "I don't understand " + playerCommand + ". Try again: \n");
+                return "\n" + "I don't understand " + playerCommand + ". Try again: \n";
             }
         }
     }
@@ -217,13 +194,14 @@ public class GameEngine {
      * Update the game parameters accordingly.
      *
      * @param direction the direction to move in.
+     *
+     * @return the String game response to this change room command.
      */
-    private void changeRooms(Direction direction) {
+    private String changeRooms(Direction direction) {
         int directionIndex = currentRoom.findIndexOfDirection(direction);
 
         if (directionIndex == -1) {
-            gameOutputStream.println("\n" + "I can't go " + direction.name() + ". Try again: \n");
-            return;
+            return "\n" + "I can't go " + direction.name() + ". Try again: \n";
         }
 
         int newRoomNumber = currentRoom.findPossibleRoomNumber(directionIndex);
@@ -231,18 +209,22 @@ public class GameEngine {
 
         currentRoom = gameMap.retrieveRoomAt(newRoomIndex);
 
-        gameOutputStream.println("\n" + "You have moved to: " + currentRoom.getRoomName() + "." + "\n");
+        String gameResponse = "\n" + "You have moved to: " + currentRoom.getRoomName() + "." + "\n";
+
         orderedVisitedRooms.add(gameMap.indexOfRoom(currentRoom));
+        gamePlayer.addToScore();
 
         if (currentRoom.isEndRoom()) {
             if (gamePlayer.inventoryContains("key")) {
                 gameEnded = true;
-                gameOutputStream.println("\n" + "Congrats! You escaped." + "\n");
+                gameResponse += "\n" + "Congrats! You escaped." + "\n";
             }
             else {
-                gameOutputStream.println("\n" + "You seem to be missing a key..." + "\n");
+                gameResponse += "\n" + "You seem to be missing a key..." + "\n";
             }
         }
+
+        return gameResponse;
     }
 
     /**
@@ -250,23 +232,26 @@ public class GameEngine {
      * place into the player's inventory.
      *
      * @param itemName the item the player wants to take.
+     *
+     * @return the String game response to this take item command.
      */
-    private void takeItem(String itemName) {
+    private String takeItem(String itemName) {
         if (!currentRoom.containsItem(itemName)) {
-            gameOutputStream.println("\n" + "There is no " + itemName + " in the room.");
-            return;
+            return "\n" + "There is no " + itemName + " in the room.";
         }
 
         currentRoom.removeItemFromRoom(itemName);
 
-        gameOutputStream.println("\n" + "You have picked up: " + itemName + "." + "\n");
+        String gameResponse = "\n" + "You have picked up: " + itemName + "." + "\n";
 
         if (!gamePlayer.inventoryContains(itemName)) {
             gamePlayer.addToInventory(itemName);
         }
         else {
-            gameOutputStream.println("\n" + "You already have " + itemName + "!" + "\n");
+            gameResponse += "\n" + "You already have " + itemName + "!" + "\n";
         }
+
+        return gameResponse;
     }
 
     /**
@@ -274,22 +259,22 @@ public class GameEngine {
      * place it into the room.
      *
      * @param itemName the item the player wants to drop.
+     *
+     * @return the String game response to this drop item command.
      */
-    private void dropItem(String itemName) {
+    private String dropItem(String itemName) {
         if (!gamePlayer.inventoryContains(itemName)) {
-            gameOutputStream.println("\n" + "You don't have " + itemName + "!");
-            return;
+            return "\n" + "You don't have " + itemName + "!";
         }
 
         gamePlayer.removeFromInventory(itemName);
 
         if (currentRoom.containsItem(itemName)) {
-            gameOutputStream.println("\n" + "The item " + itemName + " is already in this room!");
-            return;
+            return "\n" + "The item " + itemName + " is already in this room!";
         }
 
-        gameOutputStream.println("\n" + "You've dropped: " + itemName + "." + "\n");
-
         currentRoom.addItemToRoom(itemName);
+
+        return "\n" + "You've dropped: " + itemName + "." + "\n";
     }
 }

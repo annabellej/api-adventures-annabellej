@@ -3,6 +3,10 @@ package student.server;
 import student.adventure.GameEngine;
 import static student.adventure.PlayerInteractionHandler.executePlayerCommand;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 import java.util.SortedMap;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -20,12 +24,17 @@ public class KidnappedService implements AdventureService {
     private SortedMap<String, Integer> leaderboard;
     private String gameMapFile;
 
+    private final static String DATABASE_URL = "jdbc:sqlite:src/main/resources/adventure.db";
+    private final Connection dbConnection;
+
     /**
      * Default constructor for KidnappedService.
      * Initiates an empty list of Kidnapped! games and empty leaderboard.
+     * Connects to the leaderboard database.
      */
-    public KidnappedService() {
+    public KidnappedService() throws SQLException {
         gameMapFile = "src/test/resources/fullValidGame.json";
+        dbConnection = DriverManager.getConnection(DATABASE_URL);
         reset();
     }
 

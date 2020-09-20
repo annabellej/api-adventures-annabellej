@@ -25,16 +25,23 @@ public class KidnappedService implements AdventureService {
     private String gameMapFile;
 
     private final static String DATABASE_URL = "jdbc:sqlite:src/main/resources/adventure.db";
-    private final Connection dbConnection;
+    private Connection dbConnection;
 
     /**
      * Default constructor for KidnappedService.
      * Initiates an empty list of Kidnapped! games and empty leaderboard.
      * Connects to the leaderboard database.
      */
-    public KidnappedService() throws SQLException {
+    public KidnappedService() {
         gameMapFile = "src/test/resources/fullValidGame.json";
-        dbConnection = DriverManager.getConnection(DATABASE_URL);
+
+        try {
+            dbConnection = DriverManager.getConnection(DATABASE_URL);
+        }
+        catch (SQLException e) {
+            dbConnection = null;
+        }
+
         reset();
     }
 

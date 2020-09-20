@@ -1,5 +1,6 @@
 package student.adventure;
 
+import java.io.IOException;
 import java.util.*;
 
 import student.server.AdventureState;
@@ -20,6 +21,8 @@ import static student.adventure.MapDataReader.deserializeFile;
 public class GameEngine {
     private int gameID;
     private GameStatus currentGameState;
+    Map<String, List<String>> commandOptions;
+    private String inputPrompter;
 
     private GameMap gameMap;
     private Room currentRoom;
@@ -38,32 +41,36 @@ public class GameEngine {
      * Code for generating random game ID from 0 to max int value derived from:
      * https://stackoverflow.com/questions/31635157/generating-a-random-int/31635240
      */
-    public GameEngine(String fileName) {
+    public GameEngine(String fileName, String inputPrompter) {
         gamePlayer = new Player();
-
-        gameMap = deserializeFile(fileName);
-        roomNumbersToIndices = gameMap.mapRoomNumbersToIndex();
-        currentRoom = gameMap.retrieveRoomAt(0);
-
         gameEnded = false;
         orderedVisitedRooms = new ArrayList<>();
+        this.inputPrompter = inputPrompter;
 
-        //Create map of command options
-        Map<String, List<String>> commandOptions = new HashMap<>();
-        commandOptions.put("examine", new ArrayList<>(Arrays.asList(
-                           "examine", "inspect", "investigate")));
-        commandOptions.put("quit", new ArrayList<>(Arrays.asList(
-                           "quit", "exit", "bye")));
-        commandOptions.put("go", new ArrayList<>(Arrays.asList(
-                           "go", "move", "proceed", "walk")));
-        commandOptions.put("take", new ArrayList<>(Arrays.asList(
-                           "take", "remove", "grab")));
-        commandOptions.put("drop", new ArrayList<>(Arrays.asList(
-                           "drop", "leave", "release")));
+        try {
+            gameMap = deserializeFile(fileName);
+            roomNumbersToIndices = gameMap.mapRoomNumbersToIndex();
+            currentRoom = gameMap.retrieveRoomAt(0);
 
-        gameID = new Random().nextInt(Integer.MAX_VALUE);
-        currentGameState = new GameStatus(false, gameID, writeGameIntro(), "", "",
-                           new AdventureState(), commandOptions);
+            //Create map of command options
+            commandOptions = new HashMap<>();
+            commandOptions.put("examine", new ArrayList<>(Arrays.asList("room")));
+            commandOptions.put("quit", new ArrayList<>(Arrays.asList("game")));
+            commandOptions.put("go", new ArrayList<>(Arrays.asList(
+                    "east", "west", "north", "south")));
+            commandOptions.put("take", new ArrayList<>(Arrays.asList(
+                    "chair", "rope", "key", "microscope")));
+            commandOptions.put("drop", new ArrayList<>(Arrays.asList(
+                    "chair", "rope", "key", "microscope")));
+
+            gameID = new Random().nextInt(100);
+            currentGameState = new GameStatus(false, gameID, writeGameIntro() + writePlayerPrompter(),
+                    currentRoom.getRoomImageURL(), "", new AdventureState(), commandOptions);
+        }
+        catch (IOException e) {
+            currentGameState = new GameStatus(true, 0, "", "", "",
+                                                    new AdventureState(), null);
+        }
     }
 
     public Player getGamePlayer() {
@@ -86,8 +93,22 @@ public class GameEngine {
      * @return the status of this game after the player's action.
      */
     public GameStatus takeGameStep(Command playerCommand) {
-        //IMPLEMENT
-        return null;
+        String responseMessage = "";
+
+        responseMessage += performAction(playerCommand.getCommandName(),
+                                         playerCommand.getCommandValue());
+        if (gameEnded) {
+            responseMessage += writeGameOutro();
+        }
+        else {
+            responseMessage += writePlayerPrompter();
+        }
+
+        GameStatus updatedStatus = new GameStatus(false, gameID, responseMessage, currentRoom.getRoomImageURL(),
+                                                "", new AdventureState(), commandOptions);
+        currentGameState = updatedStatus;
+
+        return updatedStatus;
     }
 
     /**
@@ -115,7 +136,7 @@ public class GameEngine {
      */
     private String writePlayerPrompter() {
         return "\n" + currentRoom.toString() + "\n" +
-               "What action would you like to take?" + "\n" + "> ";
+               "What action would you like to take?" + "\n" + inputPrompter;
     }
 
     /**
@@ -125,7 +146,7 @@ public class GameEngine {
      * @return the String outro message.
      */
     private String writeGameOutro() {
-        String gameOutro = "\n" + "Thanks for playing!" +
+        String gameOutro = "\n" + "Thanks for playing! " +
                            "Here's a quick history of your room traversal: \n";
 
         for (int roomIndex: orderedVisitedRooms) {
@@ -139,16 +160,13 @@ public class GameEngine {
      * Given an inputted command by the player, determine the action the player wants to take
      * and perform that action, updating the game parameters accordingly.
      *
-     * @param playerCommand the command inputted by the player.
+     * @param commandName  the command inputted by the player.
+     * @param commandValue the argument of the command.
      *
      * @return the String game response to the given player action.
      */
-    private String performAction(String playerCommand) {
-        StringTokenizer tokenizer = new StringTokenizer(playerCommand);
-
-        String playerAction = tokenizer.nextToken().toLowerCase();
-
-        switch (playerAction) {
+    private String performAction(String commandName, String commandValue) {
+        switch (commandName) {
             case "quit": case "exit": {
                 gameEnded = true;
                 return "\n" + "Quitting game..." + "\n";
@@ -158,33 +176,30 @@ public class GameEngine {
             }
             case "move": case "go": {
                 try {
-                    String playerDirection = tokenizer.nextToken().toLowerCase();
-                    return changeRooms(Direction.valueOf(playerDirection));
+                    return changeRooms(Direction.valueOf(commandValue));
                 }
                 catch (NoSuchElementException e) {
                     return "\n" + "Please include a direction to move in. Try again:";
                 }
             }
-            case "snatch": case "grab": case "take": {
+            case "grab": case "take": {
                 try {
-                    String itemToTake = tokenizer.nextToken().toLowerCase();
-                    return takeItem(itemToTake);
+                    return takeItem(commandValue);
                 }
                 catch (NoSuchElementException e) {
                     return "\n" + "Please include an item to take. Try again: ";
                 }
             }
-            case "put": case "leave": case "drop": {
+            case "drop": case "leave": case "put": {
                 try {
-                    String itemToDrop = tokenizer.nextToken().toLowerCase();
-                    return dropItem(itemToDrop);
+                    return dropItem(commandValue);
                 }
                 catch (NoSuchElementException e) {
                     return "\n" + "Please include an item to drop. Try again:";
                 }
             }
             default: {
-                return "\n" + "I don't understand " + playerCommand + ". Try again: \n";
+                return "\n" + "I don't understand " + commandName + ". Try again: \n";
             }
         }
     }

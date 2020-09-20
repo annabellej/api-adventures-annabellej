@@ -15,7 +15,8 @@
 		"possibleRooms": [
 			2, 
 			4
-		]
+		],
+		"roomImageURL": "https://i.pinimg.com/originals/90/70/10/9070100fbc4a4f738d491953f8694045.jpg"
 	}, {
 		"roomName": "Hallway",
 		"roomDescription": "A boring concrete hallway. Not much to see here.",
@@ -30,16 +31,13 @@
 			3,
 			1,
 			5
-		]
+		],
+		"roomImageURL": "https://media.istockphoto.com/photos/photo-of-long-empty-concrete-hallway-picture-id172741772?k=6&m=172741772&s=170667a&w=0&h=joBuDI5KJ3tKEOp3VNcPjKN1KXIJ5xKbxR7hHY4YuqA="
 	}, {
 		"roomName": "Interrogation Room",
 		"roomDescription": "A pane of glass separates you from a table and chairs. Cameras are fixed in the corners. A lone microphone sits on the table.",
 		"roomNumber": 3,
 		"endRoom": false,
-		"itemsVisible": [
-			"equipment",
-			"water"
-		],
 		"possibleDirections": [
 			"West",
 			"South"
@@ -47,15 +45,14 @@
 		"possibleRooms": [
 			2,
 			6
-		]
+		],
+		"roomImageURL": "https://img.peerspace.com/image/upload/c_crop,g_custom/g_auto,c_fill,q_auto:eco,f_auto,fl_progressive:steep,w_1200,h_495/v7jcipt994uewsve7dy5"
 	}, {
 		"roomName": "Storage Closet",
 		"roomDescription": "You are in a tiny room. Cleaning supplies and other tools surround you. There are no other doors.",
 		"roomNumber": 4,
 		"endRoom": false,
 		"itemsVisible": [
-			"bleach",
-			"buckets",
 			"key"
 		],
 		"possibleDirections": [
@@ -63,14 +60,14 @@
 		],
 		"possibleRooms": [
 			1
-		]
+		],
+		"roomImageURL": "https://i.pinimg.com/originals/b1/ff/5a/b1ff5a2eb4938f3a81cf23ada031519f.jpg"
 	}, {
 		"roomName": "Laboratory",
 		"roomDescription": "You seem to have found a lab. What kind of research goes on here? You decide that you'd rather not know.",
 		"roomNumber": 5,
 		"endRoom": false,
 		"itemsVisible": [
-			"chemicals",
 			"microscope"
 		],
 		"possibleDirections": [
@@ -82,16 +79,13 @@
 			2,
 			8,
 			6
-		]
+		],
+		"roomImageURL": "https://lmg-labmanager.s3.amazonaws.com/assets/articleNo/1487/aImg/39901/equipment-monitoring-saves-lab-managers-time-and-money-l.png"
 	}, {
 		"roomName": "Server Rooms",
 		"roomDescription": "You see rows of servers, lights blinking in the semi-darkness of this room. Why does this place have a server room? Who knows.",
 		"roomNumber": 6,
 		"endRoom": false,
-		"itemsVisible": [
-			"servers",
-			"computer"
-		],
 		"possibleDirections": [
 			"North",
 			"South",
@@ -101,7 +95,8 @@
 			3,
 			9,
 			5
-		]
+		],
+		"roomImageURL": "https://blog.koorsen.com/hs-fs/hubfs/Blogs/Products%20and%20Services/Fire%20Suppression/ThinkstockPhotos-637982150.jpg?width=640&name=ThinkstockPhotos-637982150.jpg"
 	} ,{
 		"roomName": "Another Holding Room",
 		"roomDescription": "You come across another holding room. There are cobwebs in the corner.",
@@ -112,7 +107,8 @@
 		],
 		"possibleRooms": [
 			8
-		]
+		],
+		"roomImageURL": "https://i.pinimg.com/originals/90/70/10/9070100fbc4a4f738d491953f8694045.jpg"
 	} ,{
 		"roomName": "Blocked Off Stairwell",
 		"roomDescription": "A staircase leading down is roped off. A barred window is above the stairs.",
@@ -127,7 +123,8 @@
 			5,
 			7,
 			9
-		]
+		],
+		"roomImageURL": "https://images.unsplash.com/photo-1572163414972-0134541fa27c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80"
 	} ,{
 		"roomName": "Exit Hallway",
 		"roomDescription": "A locked door leads outside. Miraculously, the guards seem to be on their lunch break.",
@@ -140,6 +137,7 @@
 		"possibleRooms": [
 			6,
 			8
-		]
+		],
+		"roomImageURL": "https://www.lifewithlisa.com/wp-content/uploads/2018/07/door.jpg"
 	}]
 }

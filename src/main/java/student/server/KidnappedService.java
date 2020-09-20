@@ -38,7 +38,7 @@ public class KidnappedService implements AdventureService {
     @Override
     public int newGame() throws AdventureException {
         try {
-            GameEngine newKidnappedGame = new GameEngine(gameMapFile);
+            GameEngine newKidnappedGame = new GameEngine(gameMapFile, "");
             gamesRunning.add(newKidnappedGame);
             leaderboard.put(newKidnappedGame.getGamePlayer().getPlayerName(),
                             newKidnappedGame.getGamePlayer().getPlayerScore());

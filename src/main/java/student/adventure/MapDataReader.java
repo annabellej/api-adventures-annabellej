@@ -19,41 +19,36 @@ public class MapDataReader {
      *
      * @return the Object containing the deserialized data.
      */
-    public static GameMap deserializeFile(String fileName){
+    public static GameMap deserializeFile(String fileName) throws IOException{
         //error check: given file name is invalid
         if (fileName == null || fileName.length() == 0) {
             throw new IllegalArgumentException("Invalid file name.");
         }
 
-        try {
-            BufferedReader dataFile = new BufferedReader(new FileReader(fileName));
-            dataFile.mark(100);
+        BufferedReader dataFile = new BufferedReader(new FileReader(fileName));
+        dataFile.mark(100);
 
-            //error check: data file is empty
-            if (dataFile.readLine() == null) {
-                throw new NullPointerException("Data file is empty.");
-            }
-            dataFile.reset();
-
-            GameMap deserializedMap = new ObjectMapper().readValue(dataFile, GameMap.class);
-
-            //error check: deserialized game map has invalid structure
-            if (!deserializedMap.hasEndRoom()) {
-                throw new InvalidObjectException("Game map does not have an end room, or too many end rooms.");
-            }
-            else if (!deserializedMap.hasUniqueRoomNumbers()) {
-                throw new InvalidObjectException("Two or more rooms have same room number.");
-            }
-
-            //error check: deserialized game map has invalid values
-            if (!deserializedMap.hasValidRooms()) {
-                throw new InvalidObjectException("One or more rooms have invalid attribute values.");
-            }
-
-            return deserializedMap;
+        //error check: data file is empty
+        if (dataFile.readLine() == null) {
+            throw new NullPointerException("Data file is empty.");
         }
-        catch (IOException e) {
-            throw new IllegalArgumentException("This game map file does not exist.");
+        dataFile.reset();
+
+        GameMap deserializedMap = new ObjectMapper().readValue(dataFile, GameMap.class);
+
+        //error check: deserialized game map has invalid structure
+        if (!deserializedMap.hasEndRoom()) {
+            throw new InvalidObjectException("Game map does not have an end room, or too many end rooms.");
         }
+        else if (!deserializedMap.hasUniqueRoomNumbers()) {
+            throw new InvalidObjectException("Two or more rooms have same room number.");
+        }
+
+        //error check: deserialized game map has invalid values
+        if (!deserializedMap.hasValidRooms()) {
+            throw new InvalidObjectException("One or more rooms have invalid attribute values.");
+        }
+
+        return deserializedMap;
     }
 }

@@ -18,6 +18,7 @@ public class Room {
     private List<String> itemsVisible;
     private List<Direction> possibleDirections; //correspond to room w/ same index in possibleRooms
     private List<Integer> possibleRooms;        //correspond to direction w/ same index
+    private String roomImageURL;
 
     /**
      * Default constructor for objects of class Room.
@@ -31,6 +32,7 @@ public class Room {
         itemsVisible = new ArrayList<>();
         possibleDirections = new ArrayList<>();
         possibleRooms = new ArrayList<>();
+        roomImageURL = "";
     }
 
     //Getters:
@@ -44,6 +46,10 @@ public class Room {
 
     public int getRoomNumber() {
         return roomNumber;
+    }
+
+    public String getRoomImageURL() {
+        return roomImageURL;
     }
 
     public boolean isEndRoom() {
@@ -78,6 +84,10 @@ public class Room {
     public void setPossibleRooms(List<Integer> possibleRooms)
     {
         this.possibleRooms = possibleRooms;
+    }
+
+    public void setRoomImageURL(String roomImageURL) {
+        this.roomImageURL = roomImageURL;
     }
 
     /**
@@ -158,14 +168,14 @@ public class Room {
 
     @Override
     public String toString() {
-        String roomDetails = "You are currently in: " + roomName + "\n" + roomDescription + "\n" +
+        String roomDetails = "You are currently in: " + roomName + "\n" + roomDescription + ". \n" +
                 "From here, you can go: ";
 
         for (int index = 0; index < possibleDirections.size(); index++) {
             String currentDirection = possibleDirections.get(index).name();
 
             if (index == possibleDirections.size() - 1) {
-                roomDetails += "or " + currentDirection + "\n";
+                roomDetails += "or " + currentDirection + ". \n";
             }
             else {
                 roomDetails += currentDirection + ", ";
@@ -181,7 +191,7 @@ public class Room {
                 roomDetails += ", ";
             }
             else {
-                roomDetails += "\n";
+                roomDetails += ". \n";
             }
         }
 

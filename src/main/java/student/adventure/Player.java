@@ -7,11 +7,12 @@ import java.util.List;
  * Represents a player of the game Kidnapped!
  *
  * @author  Annabelle Ju
- * @version 9/18/2020
+ * @version 9/19/2020
  */
 public class Player {
     private String playerName;
     private List<String> playerInventory;
+    private int playerScore; //player's score = how many rooms they have visited
 
     /**
      * Default constructor for objects of class Player.
@@ -20,6 +21,7 @@ public class Player {
     public Player() {
         playerName = "";
         playerInventory = new ArrayList<>();
+        playerScore = 0;
     }
 
     /**
@@ -31,10 +33,22 @@ public class Player {
     public Player(String playerName) {
         this.playerName = playerName;
         playerInventory = new ArrayList<>();
+        playerScore = 0;
     }
 
     public String getPlayerName() {
         return playerName;
+    }
+
+    public int getPlayerScore() {
+        return playerScore;
+    }
+
+    /**
+     * Adds one to the player's score, every time they change a room.
+     */
+    public void addToScore() {
+        playerScore++;
     }
 
     /**

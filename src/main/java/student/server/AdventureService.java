@@ -1,6 +1,6 @@
 package student.server;
 
-import java.util.SortedMap;
+import java.util.Map;
 
 /**
  * An abstract store for any type of adventure game.
@@ -42,5 +42,5 @@ public interface AdventureService {
      * Returns a sorted leaderboard of player "high" scores.
      * @return a sorted map of player names to scores
      */
-    SortedMap<String, Integer> fetchLeaderboard();
+    Map<String, Integer> fetchLeaderboard();
 }

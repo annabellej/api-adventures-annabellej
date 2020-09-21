@@ -16,7 +16,7 @@ import static student.adventure.MapDataReader.deserializeFile;
  * Custom game feature: print history of player's visited rooms.
  *
  * @author  Annabelle Ju
- * @version 9/20/2020
+ * @version 9/21/2020
  */
 public class GameEngine {
     private int gameID;
@@ -37,33 +37,28 @@ public class GameEngine {
      * Assumes the game prints messages to the console (System.out).
      * Initiates this game map from a given file.
      * Player always starts with no items in room number 1.
-     *
-     * Code for generating random game ID from 0 to max int value derived from:
-     * https://stackoverflow.com/questions/31635157/generating-a-random-int/31635240
      */
-    public GameEngine(String fileName, String inputPrompter) {
+    public GameEngine(String fileName, String inputPrompter, int gameID) {
         gamePlayer = new Player();
         gameEnded = false;
         orderedVisitedRooms = new ArrayList<>();
         this.inputPrompter = inputPrompter;
+        this.gameID = gameID;
 
         try {
             gameMap = deserializeFile(fileName);
             roomNumbersToIndices = gameMap.mapRoomNumbersToIndex();
             currentRoom = gameMap.retrieveRoomAt(0);
 
-            //Create map of command options
             commandOptions = new HashMap<>();
             commandOptions.put("examine", new ArrayList<>(Arrays.asList("room")));
             commandOptions.put("quit", new ArrayList<>(Arrays.asList("game")));
-            commandOptions.put("go", new ArrayList<>(Arrays.asList(
-                    "east", "west", "north", "south")));
-            commandOptions.put("take", new ArrayList<>(Arrays.asList(
-                    "chair", "rope", "key", "microscope")));
-            commandOptions.put("drop", new ArrayList<>(Arrays.asList(
-                    "chair", "rope", "key", "microscope")));
+            commandOptions.put("go", new ArrayList<>());
+            commandOptions.put("take", new ArrayList<>());
+            commandOptions.put("drop", new ArrayList<>());
 
-            gameID = new Random().nextInt(100);
+            fillCommandOptions();
+
             currentGameState = new GameStatus(false, gameID, writeGameIntro() + writePlayerPrompter(),
                     currentRoom.getRoomImageURL(), "", new AdventureState(), commandOptions);
         }
@@ -110,10 +105,10 @@ public class GameEngine {
             responseMessage += writePlayerPrompter();
         }
 
+        fillCommandOptions();
         GameStatus updatedStatus = new GameStatus(false, gameID, responseMessage, currentRoom.getRoomImageURL(),
                                                 "", new AdventureState(), commandOptions);
         currentGameState = updatedStatus;
-
         return updatedStatus;
     }
 
@@ -160,6 +155,16 @@ public class GameEngine {
         }
 
         return gameOutro;
+    }
+
+    /**
+     * Determines the possible player commands for the current room/game state
+     * and puts those options into the list of command options.
+     */
+    private void fillCommandOptions() {
+        commandOptions.put("go", currentRoom.fetchPossibleDirections());
+        commandOptions.put("take", currentRoom.fetchItemsVisible());
+        commandOptions.put("drop", gamePlayer.fetchPlayerInventory());
     }
 
     /**

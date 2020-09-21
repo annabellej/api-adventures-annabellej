@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * Adventure game service that store and runs a number of Kidnapped! games.
  *
  * @author  Annabelle Ju
- * @version 9/20/2020
+ * @version 9/21/2020
  */
 public class KidnappedService implements AdventureService {
     private List<GameEngine> gamesRunning;
@@ -47,9 +47,10 @@ public class KidnappedService implements AdventureService {
     public int newGame() throws AdventureException {
         try {
             Statement statement = dbConnection.createStatement();
-            statement.execute("CREATE TABLE IF NOT EXISTS leaderboard_aju3 (name varchar(50), score int)");
+            statement.execute("CREATE TABLE IF NOT EXISTS " +
+                                  "leaderboard_aju3 (name varchar(50), score int)");
 
-            GameEngine newKidnappedGame = new GameEngine(gameMapFile, "");
+            GameEngine newKidnappedGame = new GameEngine(gameMapFile, "", gamesRunning.size());
             gamesRunning.add(newKidnappedGame);
 
             return newKidnappedGame.getGameID();
@@ -61,7 +62,7 @@ public class KidnappedService implements AdventureService {
 
     @Override
     public GameStatus getGame(int id) {
-        return fetchGameWithID(id).getCurrentGameState();
+        return gamesRunning.get(id).getCurrentGameState();
     }
 
     @Override
@@ -69,7 +70,7 @@ public class KidnappedService implements AdventureService {
         GameEngine engineToRemove;
 
         try {
-            engineToRemove = fetchGameWithID(id);
+            engineToRemove = gamesRunning.get(id);
         }
         catch (NoSuchElementException e) {
             return false;
@@ -81,7 +82,7 @@ public class KidnappedService implements AdventureService {
 
     @Override
     public void executeCommand(int id, Command command) {
-        GameEngine gameEngine = fetchGameWithID(id);
+        GameEngine gameEngine = gamesRunning.get(id);
 
         executePlayerCommand(gameEngine, command);
 
@@ -111,23 +112,6 @@ public class KidnappedService implements AdventureService {
         catch (SQLException e) {
             return null;
         }
-    }
-
-    /**
-     * Finds the GameEngine run by this service that has the given id.
-     *
-     * @param gameID the id of the game to search for.
-     *
-     * @return the GameEngine with the given id.
-     */
-    private GameEngine fetchGameWithID(int gameID) {
-        for (GameEngine currentEngine: gamesRunning) {
-            if (currentEngine.getGameID() == gameID) {
-                return currentEngine;
-            }
-        }
-
-        throw new NoSuchElementException("No game with this ID is currently running.");
     }
 
     /**

@@ -1,13 +1,15 @@
 package student.adventure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Represents a player of the game Kidnapped!
  *
  * @author  Annabelle Ju
- * @version 9/20/2020
+ * @version 9/21/2020
  */
 public class Player {
     private String playerName;
@@ -46,6 +48,18 @@ public class Player {
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
+    }
+
+    /**
+     * Makes a copied list of items in the player's inventory.
+     *
+     * @return a list of items in this player's inventory.
+     */
+    public List<String> fetchPlayerInventory() {
+        List<String> copiedList = Arrays.asList(new String[playerInventory.size()]);
+        Collections.copy(copiedList, playerInventory);
+
+        return copiedList;
     }
 
     /**

@@ -1,6 +1,8 @@
 package student.adventure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -8,7 +10,7 @@ import java.util.List;
  * A room can either be a normal room or the end room of the game.
  *
  * @author  Annabelle Ju
- * @version 9/17/2020
+ * @version 9/21/2020
  */
 public class Room {
     private String roomName;
@@ -142,6 +144,34 @@ public class Room {
      */
     public boolean containsItem(String itemName) {
         return itemsVisible.contains(itemName);
+    }
+
+    /**
+     * Finds the string direction values of the possible ways a player can move from
+     * this room.
+     *
+     * @return a list of the possible directions as Strings.
+     */
+    public List<String> fetchPossibleDirections() {
+        List<String> stringDirections = new ArrayList<>();
+
+        for (Direction direction: possibleDirections) {
+            stringDirections.add(direction.toString());
+        }
+
+        return stringDirections;
+    }
+
+    /**
+     * Makes a copied list of items visible in this room.
+     *
+     * @return a list of all items in the room.
+     */
+    public List<String> fetchItemsVisible() {
+        List<String> copiedList = Arrays.asList(new String[itemsVisible.size()]);
+        Collections.copy(copiedList, itemsVisible);
+
+        return copiedList;
     }
 
     /**

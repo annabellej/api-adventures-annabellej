@@ -5,7 +5,6 @@ import student.server.GameStatus;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -16,7 +15,7 @@ import java.util.StringTokenizer;
  * game response.
  *
  * @author  Annabelle Ju
- * @version 9/19/2020
+ * @version 9/21/2020
  */
 public class PlayerInteractionHandler {
     /**
@@ -41,7 +40,7 @@ public class PlayerInteractionHandler {
      *
      * @return an OutputStream containing the game's response.
      */
-    public static OutputStream executePlayerCommand(GameEngine gameEngine, InputStream inputStream) {
+    public static ByteArrayOutputStream executePlayerCommand(GameEngine gameEngine, InputStream inputStream) {
         Scanner scanner = new Scanner(inputStream);
         StringTokenizer tokenizer = new StringTokenizer(scanner.nextLine());
 
@@ -58,9 +57,10 @@ public class PlayerInteractionHandler {
         Command playerCommand =  new Command(commandName, commandValue);
         GameStatus gameResponse = gameEngine.takeGameStep(playerCommand);
 
-        PrintStream printStream = new PrintStream(new ByteArrayOutputStream());
-        printStream.println(gameResponse.getMessage());
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        return printStream;
+        new PrintStream(outputStream).print(gameResponse.getMessage());
+
+        return outputStream;
     }
 }

@@ -16,7 +16,7 @@ import static student.adventure.MapDataReader.deserializeFile;
  * Custom game feature: print history of player's visited rooms.
  *
  * @author  Annabelle Ju
- * @version 9/19/2020
+ * @version 9/20/2020
  */
 public class GameEngine {
     private int gameID;
@@ -85,6 +85,10 @@ public class GameEngine {
         return currentGameState;
     }
 
+    public boolean isGameEnded() {
+        return gameEnded;
+    }
+
     /**
      * Takes a step in the game given a command from the player.
      *
@@ -93,6 +97,8 @@ public class GameEngine {
      * @return the status of this game after the player's action.
      */
     public GameStatus takeGameStep(Command playerCommand) {
+        gamePlayer.setPlayerName(playerCommand.getPlayerName());
+
         String responseMessage = "";
 
         responseMessage += performAction(playerCommand.getCommandName(),

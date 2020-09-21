@@ -7,7 +7,7 @@ import java.util.List;
  * Represents a player of the game Kidnapped!
  *
  * @author  Annabelle Ju
- * @version 9/19/2020
+ * @version 9/20/2020
  */
 public class Player {
     private String playerName;
@@ -42,6 +42,10 @@ public class Player {
 
     public int getPlayerScore() {
         return playerScore;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 
     /**

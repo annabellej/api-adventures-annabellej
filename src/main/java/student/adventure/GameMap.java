@@ -10,7 +10,7 @@ import java.util.HashSet;
  * Represents the map of a game with all of the Rooms.
  *
  * @author  Annabelle Ju
- * @version 9/17/2020
+ * @version 9/21/2020
  */
 public class GameMap {
     private List<Room> allRooms;
@@ -67,7 +67,6 @@ public class GameMap {
 
         for (int index = 0; index < allRooms.size(); index++) {
             int currentRoomNumber = allRooms.get(index).getRoomNumber();
-
             roomNumberIndexLinks.put(currentRoomNumber, index);
         }
 
@@ -98,7 +97,7 @@ public class GameMap {
      * @return true  if this map has exactly one end room, else
      *         false if this map doesn't have exactly one end room.
      */
-    public boolean hasEndRoom() {
+    public boolean hasSingleEndRoom() {
         int numEndRooms = 0;
 
         for (Room currentRoom: allRooms) {

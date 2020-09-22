@@ -42,15 +42,17 @@ public class PlayerInteractionHandler {
      */
     public static ByteArrayOutputStream executePlayerCommand(GameEngine gameEngine, InputStream inputStream) {
         Scanner scanner = new Scanner(inputStream);
+
+        //Split player input into separate String tokens
         StringTokenizer tokenizer = new StringTokenizer(scanner.nextLine());
 
+        //Standardize player commands to lower case
         String commandName = tokenizer.nextToken().toLowerCase();
         String commandValue;
 
         try {
             commandValue = tokenizer.nextToken().toLowerCase();
-        }
-        catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             commandValue = null;
         }
 

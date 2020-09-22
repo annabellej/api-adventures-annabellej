@@ -37,11 +37,17 @@ public class GameEngine {
     private Map<Integer, Integer> roomNumbersToIndices; //link room number to index in room list
     private List<Integer> orderedVisitedRooms;   //list of the indexes of player's visited rooms
 
+    private final String REQUIRED_ESCAPE_ITEM = "key";
+
     /**
      * Constructor for objects of class GameEngine.
      * Assumes the game prints messages to the console (System.out).
      * Initiates this game map from a given file.
      * Player always starts with no items in room number 1.
+     *
+     * @param fileName      the name of the file to generate this game's GameMap.
+     * @param inputPrompter prompt to be printed for a player to enter commands.
+     * @param gameID        the id to identify this particular GameEngine.
      */
     public GameEngine(String fileName, String inputPrompter, int gameID) {
         gamePlayer = new Player();
@@ -66,8 +72,7 @@ public class GameEngine {
 
             currentGameState = new GameStatus(false, gameID, writeGameIntro() + writePlayerPrompter(),
                     currentRoom.getRoomImageURL(), "", new AdventureState(), commandOptions);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             currentGameState = new GameStatus(true, 0, "", "", "",
                                                     new AdventureState(), null);
         }
@@ -130,7 +135,7 @@ public class GameEngine {
 
         String responseMessage = "";
 
-        responseMessage += performAction(playerCommand.getCommandName(),
+        responseMessage += performPlayerAction(playerCommand.getCommandName(),
                                          playerCommand.getCommandValue());
         if (gameEnded) {
             responseMessage += writeGameOutro();
@@ -210,43 +215,83 @@ public class GameEngine {
      *
      * @return the String game response to the given player action.
      */
-    private String performAction(String commandName, String commandValue) {
+    private String performPlayerAction(String commandName, String commandValue) {
         switch (commandName) {
-            case "quit": case "exit": {
-                gameEnded = true;
-                gamePlayer.setPlayerScore(Integer.MAX_VALUE);
-                return "\n" + "Quitting game..." + "\n";
-            }
-            case "examine": {
+            case "quit": case "exit":
+                return quitGame();
+            case "examine":
                 return "\n" + "Examining this room..." + "\n";
-            }
-            case "move": case "go": {
-                try {
-                    return changeRooms(Direction.valueOf(commandValue));
-                }
-                catch (NullPointerException e) {
-                    return "\n" + "Please include a direction to move in. Try again:";
-                }
-            }
-            case "grab": case "take": {
-                try {
-                    return takeItem(commandValue);
-                }
-                catch (NullPointerException e) {
-                    return "\n" + "Please include an item to take. Try again: ";
-                }
-            }
-            case "drop": case "leave": case "put": {
-                try {
-                    return dropItem(commandValue);
-                }
-                catch (NullPointerException e) {
-                    return "\n" + "Please include an item to drop. Try again:";
-                }
-            }
-            default: {
+            case "move": case "go":
+                return handleGoCommand(commandValue);
+            case "grab": case "take":
+                return handleTakeCommand(commandValue);
+            case "drop": case "leave": case "put":
+                return handleDropCommand(commandValue);
+            default:
                 return "\n" + "I don't understand " + commandName + ". Try again: \n";
+        }
+    }
+
+    /**
+     * Ends game play for this game without a win.
+     * Player's score is adjusted accordingly.
+     *
+     * @return String message telling player the game is ending.
+     */
+    private String quitGame(){
+        gameEnded = true;
+        gamePlayer.setPlayerScore(Integer.MAX_VALUE);
+        return "\n" + "Quitting game..." + "\n";
+    }
+
+    /**
+     * Handles a player command to go in a certain String direction.
+     *
+     * @param directionName the String direction the player wants to go.
+     *
+     * @return String message informing player of their movement or asking to try again.
+     */
+    private String handleGoCommand(String directionName) {
+        try {
+            String gameResponse = changeRoomsTo(Direction.valueOf(directionName));
+
+            if (currentRoom.isEndRoom()) {
+                gameResponse += respondToReachingEndRoom();
             }
+
+            return gameResponse;
+        } catch (NullPointerException e) {
+            return "\n" + "Please include a direction to move in. Try again:";
+        }
+    }
+
+    /**
+     * Handles a player command to take an item from the current room.
+     *
+     * @param itemName the name of the item to take.
+     *
+     * @return String message informing player of their action or asking to try again.
+     */
+    private String handleTakeCommand(String itemName) {
+        try {
+            return takeItem(itemName);
+        } catch (NullPointerException e) {
+            return "\n" + "Please include an item to take. Try again: ";
+        }
+    }
+
+    /**
+     * Handles a player command to drop an item from their inventory.
+     *
+     * @param itemName the name of the item to drop.
+     *
+     * @return String message informing player of their action or asking to try again.
+     */
+    private String handleDropCommand(String itemName) {
+        try {
+            return dropItem(itemName);
+        } catch (NullPointerException e) {
+            return "\n" + "Please include an item to drop. Try again:";
         }
     }
 
@@ -258,33 +303,21 @@ public class GameEngine {
      *
      * @return the String game response to this change room command.
      */
-    private String changeRooms(Direction direction) {
+    private String changeRoomsTo(Direction direction) {
         int newRoomNumber = currentRoom.findRoomNumberInDirection(direction);
 
+        //If room number is < 0, movement in given direction is impossible
         if (newRoomNumber < 0) {
             return "\n" + "I can't go " + direction.name() + ". Try again: \n";
         }
 
         int newRoomIndex = roomNumbersToIndices.get(newRoomNumber);
-
         currentRoom = gameMap.retrieveRoomAt(newRoomIndex);
-
-        String gameResponse = "\n" + "You have moved to: " + currentRoom.getRoomName() + "." + "\n";
 
         orderedVisitedRooms.add(gameMap.indexOfRoom(currentRoom));
         gamePlayer.addToScore();
 
-        if (currentRoom.isEndRoom()) {
-            if (gamePlayer.inventoryContains("key")) {
-                gameEnded = true;
-                gameResponse += "\n" + "Congrats! You escaped." + "\n";
-            }
-            else {
-                gameResponse += "\n" + "You seem to be missing a key..." + "\n";
-            }
-        }
-
-        return gameResponse;
+        return "\n" + "You have moved to: " + currentRoom.getRoomName() + "." + "\n";
     }
 
     /**
@@ -305,7 +338,6 @@ public class GameEngine {
         }
 
         currentRoom.removeItemFromRoom(itemName);
-
         String gameResponse = "\n" + "You have picked up: " + itemName + "." + "\n";
 
         if (!gamePlayer.inventoryContains(itemName)) {
@@ -344,5 +376,22 @@ public class GameEngine {
         currentRoom.addItemToRoom(itemName);
 
         return "\n" + "You've dropped: " + itemName + "." + "\n";
+    }
+
+    /**
+     * Provides appropriate game response to player finding the end room of the map.
+     * Whether player has won depends on whether they have the key in the end room.
+     * Player only wins if they also have the key at this point.
+     *
+     * @return String message informing player of results of reaching end room.
+     */
+    private String respondToReachingEndRoom() {
+        if (gamePlayer.inventoryContains(REQUIRED_ESCAPE_ITEM)) {
+            gameEnded = true;
+            return "\n" + "Congrats! You escaped." + "\n";
+        }
+        else {
+            return "\n" + "You seem to be missing a " + REQUIRED_ESCAPE_ITEM + "\n";
+        }
     }
 }

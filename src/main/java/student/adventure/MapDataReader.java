@@ -58,7 +58,7 @@ public class MapDataReader {
      */
     private static void checkMapStructureValidity(GameMap gameMap) throws InvalidObjectException {
         //error check: deserialized game map has invalid structure
-        if (!gameMap.hasEndRoom()) {
+        if (!gameMap.hasSingleEndRoom()) {
             throw new InvalidObjectException("Game map does not have an end room, or too many end rooms.");
         }
         else if (!gameMap.hasUniqueRoomNumbers()) {

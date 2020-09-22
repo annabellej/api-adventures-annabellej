@@ -41,8 +41,7 @@ public class KidnappedService implements AdventureService {
 
         try {
             dbConnection = DriverManager.getConnection(DATABASE_URL);
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             dbConnection = null;
         }
     }
@@ -80,8 +79,7 @@ public class KidnappedService implements AdventureService {
             gamesRunning.add(newKidnappedGame);
 
             return newKidnappedGame.getGameID();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new AdventureException("Could not start new game.");
         }
     }
@@ -97,8 +95,7 @@ public class KidnappedService implements AdventureService {
 
         try {
             engineToRemove = gamesRunning.get(id);
-        }
-        catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             return false;
         }
 
@@ -119,8 +116,7 @@ public class KidnappedService implements AdventureService {
                 statement.execute("INSERT INTO leaderboard_aju3 VALUES (\'" +
                                       gameEngine.getGamePlayer().getPlayerName() + "\', " +
                                       gameEngine.getGamePlayer().getPlayerScore() + ")");
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 return;
             }
         }
@@ -134,8 +130,7 @@ public class KidnappedService implements AdventureService {
 
             return sortLeaderboard(statement.getResultSet());
 
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             return null;
         }
     }
@@ -159,8 +154,7 @@ public class KidnappedService implements AdventureService {
 
                 leaderboard.put(playerName, playerScore);
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             return null;
         }
 

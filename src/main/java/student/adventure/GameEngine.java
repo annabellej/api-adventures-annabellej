@@ -7,6 +7,8 @@ import student.server.AdventureState;
 import student.server.GameStatus;
 import student.server.Command;
 
+import javax.validation.constraints.Null;
+
 import static student.adventure.MapDataReader.deserializeFile;
 
 /**
@@ -21,7 +23,7 @@ import static student.adventure.MapDataReader.deserializeFile;
 public class GameEngine {
     private int gameID;
     private GameStatus currentGameState;
-    Map<String, List<String>> commandOptions;
+    private Map<String, List<String>> commandOptions;
     private String inputPrompter;
 
     private GameMap gameMap;
@@ -82,6 +84,26 @@ public class GameEngine {
 
     public boolean isGameEnded() {
         return gameEnded;
+    }
+
+    /**
+     * Finds the name of the current room.
+     *
+     * @return the String name of the current room.
+     */
+    public String fetchCurrentRoom() {
+        return currentRoom.getRoomName();
+    }
+
+    /**
+     * Finds the number of command value options for a given command.
+     *
+     * @param commandName the name of the command to search for.
+     *
+     * @return the number of possible values for this command.
+     */
+    public int fetchNumberOfCommandOptions(String commandName) {
+        return commandOptions.get(commandName).size();
     }
 
     /**
@@ -189,7 +211,7 @@ public class GameEngine {
                 try {
                     return changeRooms(Direction.valueOf(commandValue));
                 }
-                catch (NoSuchElementException e) {
+                catch (NullPointerException e) {
                     return "\n" + "Please include a direction to move in. Try again:";
                 }
             }
@@ -197,7 +219,7 @@ public class GameEngine {
                 try {
                     return takeItem(commandValue);
                 }
-                catch (NoSuchElementException e) {
+                catch (NullPointerException e) {
                     return "\n" + "Please include an item to take. Try again: ";
                 }
             }
@@ -205,7 +227,7 @@ public class GameEngine {
                 try {
                     return dropItem(commandValue);
                 }
-                catch (NoSuchElementException e) {
+                catch (NullPointerException e) {
                     return "\n" + "Please include an item to drop. Try again:";
                 }
             }
@@ -262,6 +284,10 @@ public class GameEngine {
      * @return the String game response to this take item command.
      */
     private String takeItem(String itemName) {
+        if (itemName == null) {
+            throw new NullPointerException("There is no such item!");
+        }
+
         if (!currentRoom.containsItem(itemName)) {
             return "\n" + "There is no " + itemName + " in the room.";
         }
@@ -289,6 +315,10 @@ public class GameEngine {
      * @return the String game response to this drop item command.
      */
     private String dropItem(String itemName) {
+        if (itemName == null) {
+            throw new NullPointerException("There is no such item!");
+        }
+
         if (!gamePlayer.inventoryContains(itemName)) {
             return "\n" + "You don't have " + itemName + "!";
         }

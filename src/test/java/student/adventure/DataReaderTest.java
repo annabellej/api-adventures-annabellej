@@ -66,6 +66,16 @@ public class DataReaderTest {
         deserializeFile("src/test/resources/noPossibleMovements.json");
     }
 
+    @Test (expected = IOException.class)
+    public void testFileDoesNotExist() throws IOException {
+        deserializeFile("src/test/resources/hello.json");
+    }
+
+    @Test (expected = InvalidObjectException.class)
+    public void testDirectionToNonexistentRoom() throws IOException {
+        deserializeFile("src/test/resources/nonexistentRoom.json");
+    }
+
     //Valid json file test:
     @Test
     public void testValidDataFile() throws IOException {

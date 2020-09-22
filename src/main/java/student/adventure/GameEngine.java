@@ -113,6 +113,18 @@ public class GameEngine {
     }
 
     /**
+     * Determine whether the currrent room contains a given item.
+     *
+     * @param itemName the name of the item to search for in this room.
+     *
+     * @return true  if the given item exists in the current room, else
+     *         false if the item doesn't exist in the current room.
+     */
+    public boolean currentRoomContainsItem(String itemName) {
+        return currentRoom.containsItem(itemName);
+    }
+
+    /**
      * Finds the number of command value options for a given command.
      *
      * @param commandName the name of the command to search for.

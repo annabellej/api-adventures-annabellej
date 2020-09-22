@@ -115,6 +115,14 @@ public class GameEngineTest {
         assertTrue(testerEngine.isGameEnded());
     }
 
+    @Test
+    public void testCanReturnToPreviousRoom() {
+        executePlayerCommand(testerEngine, new Command("go", "south"));
+        executePlayerCommand(testerEngine, new Command("go", "north"));
+
+        assertEquals("Holding Room", testerEngine.fetchCurrentRoom());
+    }
+
     //Tests for console run game
     @Test
     public void testValidMovingAround() {
@@ -145,6 +153,7 @@ public class GameEngineTest {
         executePlayerCommand(testerEngine, inputStream);
 
         assertTrue(testerEngine.getGamePlayer().inventoryContains("chair"));
+        assertFalse(testerEngine.currentRoomContainsItem("chair"));
     }
 
     @Test
@@ -180,6 +189,7 @@ public class GameEngineTest {
         executePlayerCommand(testerEngine, inputStream);
 
         assertFalse(testerEngine.getGamePlayer().inventoryContains("potato"));
+        assertTrue(testerEngine.currentRoomContainsItem("potato"));
     }
 
     @Test
@@ -267,6 +277,26 @@ public class GameEngineTest {
 
         String gameOutput = outputStream.toString();
         assertThat(gameOutput, CoreMatchers.containsString("Please include an item to drop."));
+    }
+
+    @Test
+    public void testEndGameWithQuit() {
+        playerInput = "quit";
+        inputStream = new ByteArrayInputStream(playerInput.getBytes());
+
+        executePlayerCommand(testerEngine, inputStream);
+
+        assertTrue(testerEngine.isGameEnded());
+    }
+
+    @Test
+    public void testEndGameWithExit() {
+        playerInput = "exit";
+        inputStream = new ByteArrayInputStream(playerInput.getBytes());
+
+        executePlayerCommand(testerEngine, inputStream);
+
+        assertTrue(testerEngine.isGameEnded());
     }
 
     //Custom feature test

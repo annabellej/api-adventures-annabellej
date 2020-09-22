@@ -85,6 +85,14 @@ public class GameMap {
             if (!currentRoom.isValidRoom()) {
                 return false;
             }
+
+            //Check if any rooms lead to nonexistent rooms
+            List<Integer> possibleRoomNumbers = currentRoom.fetchPossibleRoomNumbers();
+            for (int roomNumber: possibleRoomNumbers) {
+                if (roomNumber > allRooms.size()) {
+                    return false;
+                }
+            }
         }
 
         return true;

@@ -133,6 +133,21 @@ public class Room {
     }
 
     /**
+     * Finds all the possible numbers of rooms a player can move to from this room.
+     *
+     * @return a list of all the possible room numbers.
+     */
+    public List<Integer> fetchPossibleRoomNumbers() {
+        List<Integer> possibleRoomNumbers = new ArrayList<>();
+
+        for (PlayerMovement movement: possibleMovements) {
+            possibleRoomNumbers.add(movement.getMovedRoomNumber());
+        }
+
+        return possibleRoomNumbers;
+    }
+
+    /**
      * Makes a copied list of items visible in this room.
      *
      * @return a list of all items in the room.

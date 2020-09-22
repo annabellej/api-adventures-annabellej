@@ -1,8 +1,12 @@
 package student.adventure;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Arrays;
 
 import student.server.AdventureState;
 import student.server.GameStatus;

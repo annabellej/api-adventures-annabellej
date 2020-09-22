@@ -259,13 +259,12 @@ public class GameEngine {
      * @return the String game response to this change room command.
      */
     private String changeRooms(Direction direction) {
-        int directionIndex = currentRoom.findIndexOfDirection(direction);
+        int newRoomNumber = currentRoom.findRoomNumberInDirection(direction);
 
-        if (directionIndex == -1) {
+        if (newRoomNumber < 0) {
             return "\n" + "I can't go " + direction.name() + ". Try again: \n";
         }
 
-        int newRoomNumber = currentRoom.findPossibleRoomNumber(directionIndex);
         int newRoomIndex = roomNumbersToIndices.get(newRoomNumber);
 
         currentRoom = gameMap.retrieveRoomAt(newRoomIndex);

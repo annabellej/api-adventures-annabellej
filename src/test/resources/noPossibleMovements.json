@@ -2,15 +2,11 @@
 	"allRooms": [{
 		"roomName": "Holding Room",
 		"roomDescription": "You are surrounded by blank concrete walls.",
-		"roomNumber": -1,
+		"roomNumber": 1,
 		"isEndRoom": false,
 		"itemsVisible": [
 			"chair",
 			"rope"
-		],
-		"possibleMovements": [
-			{"movementDirection": "East", "movedRoomNumber": 2},
-			{"movementDirection": "South", "movedRoomNumber": 4}
 		],
 		"roomImageURL": "https://i.pinimg.com/originals/90/70/10/9070100fbc4a4f738d491953f8694045.jpg"
 	}, {

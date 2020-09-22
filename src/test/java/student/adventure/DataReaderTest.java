@@ -62,13 +62,8 @@ public class DataReaderTest {
     }
 
     @Test (expected = InvalidObjectException.class)
-    public void testExistsRoomWithNoPossibleDirections() throws IOException {
-        deserializeFile("src/test/resources/noDirections.json");
-    }
-
-    @Test (expected = InvalidObjectException.class)
-    public void testExistsRoomWithNoPossibleRooms() throws IOException {
-        deserializeFile("src/test/resources/noRooms.json");
+    public void testExistsRoomWithNoPossibleMovements() throws IOException {
+        deserializeFile("src/test/resources/noPossibleMovements.json");
     }
 
     //Valid json file test:

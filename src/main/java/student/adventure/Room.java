@@ -18,8 +18,7 @@ public class Room {
     private int roomNumber;
     private boolean isEndRoom;
     private List<String> itemsVisible;
-    private List<Direction> possibleDirections; //correspond to room w/ same index in possibleRooms
-    private List<Integer> possibleRooms;        //correspond to direction w/ same index
+    private List<PlayerMovement> possibleMovements;
     private String roomImageURL;
 
     /**
@@ -32,8 +31,7 @@ public class Room {
         roomNumber = 0;
         isEndRoom = false;
         itemsVisible = new ArrayList<>();
-        possibleDirections = new ArrayList<>();
-        possibleRooms = new ArrayList<>();
+        possibleMovements = new ArrayList<>();
         roomImageURL = "";
     }
 
@@ -79,12 +77,8 @@ public class Room {
         this.itemsVisible = itemsVisible;
     }
 
-    public void setPossibleDirections(List<Direction> possibleDirections) {
-        this.possibleDirections = possibleDirections;
-    }
-
-    public void setPossibleRooms(List<Integer> possibleRooms) {
-        this.possibleRooms = possibleRooms;
+    public void setPossibleMovements(List<PlayerMovement> possibleMovements) {
+        this.possibleMovements = possibleMovements;
     }
 
     public void setRoomImageURL(String roomImageURL) {
@@ -110,30 +104,6 @@ public class Room {
     }
 
     /**
-     * Determines the index of a given direction in this room's list of
-     * possible directions.
-     *
-     * @param direction the given direction to search for.
-     *
-     * @return the index of the given direction in the list of possible directions.
-     */
-    public int findIndexOfDirection(Direction direction) {
-        return possibleDirections.indexOf(direction);
-    }
-
-    /**
-     * Determines the room number given its index in the list of
-     * possible rooms to move to for this room.
-     *
-     * @param roomNumberIndex the index of the room number to retrieve.
-     *
-     * @return the room number corresponding to the given index.
-     */
-    public int findPossibleRoomNumber(int roomNumberIndex) {
-        return possibleRooms.get(roomNumberIndex);
-    }
-
-    /**
      * Determines whether this room contains a given item.
      *
      * @param itemName the name of the item to check.
@@ -154,7 +124,8 @@ public class Room {
     public List<String> fetchPossibleDirections() {
         List<String> stringDirections = new ArrayList<>();
 
-        for (Direction direction: possibleDirections) {
+        for (PlayerMovement movement: possibleMovements) {
+            Direction direction = movement.getMovementDirection();
             stringDirections.add(direction.toString());
         }
 
@@ -174,6 +145,23 @@ public class Room {
     }
 
     /**
+     * Retrieves the room number of the room moved to after traveling in given direction.
+     *
+     * @param direction the direction to travel in.
+     *
+     * @return the room number of the room traveled to.
+     */
+    public int findRoomNumberInDirection(Direction direction) {
+        for (PlayerMovement movement: possibleMovements) {
+            if (movement.getMovementDirection().equals(direction)) {
+                return movement.getMovedRoomNumber();
+            }
+        }
+
+        return -1;
+    }
+
+    /**
      * Determines if this room has valid properties:
      * Room name and description should not be empty, room number should be positive,
      * this room should have at least one possible direction/room to move to.
@@ -186,7 +174,7 @@ public class Room {
             return false;
         } else if (roomNumber <= 0) {
             return false;
-        } else if (possibleDirections.size() < 1 || possibleRooms.size() < 1) {
+        } else if (possibleMovements.size() < 1) {
             return false;
         }
 
@@ -198,10 +186,11 @@ public class Room {
         String roomDetails = "You are currently in: " + roomName + "\n" + roomDescription + ". \n" +
                 "From here, you can go: ";
 
-        for (int index = 0; index < possibleDirections.size(); index++) {
-            String currentDirection = possibleDirections.get(index).name();
+        //loop to concatenate possible directions the player can move from here
+        for (int index = 0; index < possibleMovements.size(); index++) {
+            String currentDirection = possibleMovements.get(index).getMovementDirection().toString();
 
-            if (index == possibleDirections.size() - 1) {
+            if (index == possibleMovements.size() - 1) {
                 roomDetails += "or " + currentDirection + ". \n";
             }
             else {
@@ -211,6 +200,7 @@ public class Room {
 
         roomDetails += "Items visible: ";
 
+        //loop to concatenate all items visible to player in this room
         for (int index = 0; index < itemsVisible.size(); index++) {
             roomDetails += itemsVisible.get(index);
 

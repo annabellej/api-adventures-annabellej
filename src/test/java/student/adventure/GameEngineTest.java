@@ -282,4 +282,13 @@ public class GameEngineTest {
         String gameOutput = outputStream.toString();
         assertThat(gameOutput, CoreMatchers.containsString("Storage Closet" + "\n" + "Holding Room"));
     }
+
+    @Test
+    public void testImmediateQuitRoomHistory() {
+        playerInput = "quit";
+        inputStream = new ByteArrayInputStream(playerInput.getBytes());
+        executePlayerCommand(testerEngine, inputStream);
+
+        assertEquals(0, testerEngine.findNumberVisitedRooms());
+    }
 }

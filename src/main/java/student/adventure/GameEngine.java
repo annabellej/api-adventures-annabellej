@@ -1,13 +1,12 @@
 package student.adventure;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import student.server.AdventureState;
 import student.server.GameStatus;
 import student.server.Command;
-
-import javax.validation.constraints.Null;
 
 import static student.adventure.MapDataReader.deserializeFile;
 
@@ -84,6 +83,15 @@ public class GameEngine {
 
     public boolean isGameEnded() {
         return gameEnded;
+    }
+
+    /**
+     * Determine the total number of rooms visited so far.
+     *
+     * @return the number of rooms visited by the player so far.
+     */
+    public int findNumberVisitedRooms() {
+        return orderedVisitedRooms.size();
     }
 
     /**
@@ -202,6 +210,7 @@ public class GameEngine {
         switch (commandName) {
             case "quit": case "exit": {
                 gameEnded = true;
+                gamePlayer.setPlayerScore(Integer.MAX_VALUE);
                 return "\n" + "Quitting game..." + "\n";
             }
             case "examine": {

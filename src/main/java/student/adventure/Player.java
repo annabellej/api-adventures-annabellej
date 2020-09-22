@@ -50,6 +50,10 @@ public class Player {
         this.playerName = playerName;
     }
 
+    public void setPlayerScore(int playerScore) {
+        this.playerScore = playerScore;
+    }
+
     /**
      * Makes a copied list of items in the player's inventory.
      *

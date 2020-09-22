@@ -16,7 +16,7 @@ public class Room {
     private String roomName;
     private String roomDescription;
     private int roomNumber;
-    private boolean endRoom;
+    private boolean isEndRoom;
     private List<String> itemsVisible;
     private List<Direction> possibleDirections; //correspond to room w/ same index in possibleRooms
     private List<Integer> possibleRooms;        //correspond to direction w/ same index
@@ -30,7 +30,7 @@ public class Room {
         roomName = "";
         roomDescription = "";
         roomNumber = 0;
-        endRoom = false;
+        isEndRoom = false;
         itemsVisible = new ArrayList<>();
         possibleDirections = new ArrayList<>();
         possibleRooms = new ArrayList<>();
@@ -55,7 +55,7 @@ public class Room {
     }
 
     public boolean isEndRoom() {
-        return endRoom;
+        return isEndRoom;
     }
 
     //Setters:
@@ -71,8 +71,8 @@ public class Room {
         this.roomNumber = roomNumber;
     }
 
-    public void setEndRoom(boolean endRoom) {
-        this.endRoom = endRoom;
+    public void setIsEndRoom(boolean endRoom) {
+        this.isEndRoom = endRoom;
     }
 
     public void setItemsVisible(List<String> itemsVisible) {
@@ -83,8 +83,7 @@ public class Room {
         this.possibleDirections = possibleDirections;
     }
 
-    public void setPossibleRooms(List<Integer> possibleRooms)
-    {
+    public void setPossibleRooms(List<Integer> possibleRooms) {
         this.possibleRooms = possibleRooms;
     }
 
@@ -183,13 +182,11 @@ public class Room {
      *         false if this room has at least one invalid property.
      */
     public boolean isValidRoom() {
-        if (roomName.equals("") || roomDescription.equals("")) {
+        if (roomName.isEmpty() || roomDescription.isEmpty()) {
             return false;
-        }
-        else if (roomNumber <= 0) {
+        } else if (roomNumber <= 0) {
             return false;
-        }
-        else if (possibleDirections.size() < 1 || possibleRooms.size() < 1) {
+        } else if (possibleDirections.size() < 1 || possibleRooms.size() < 1) {
             return false;
         }
 

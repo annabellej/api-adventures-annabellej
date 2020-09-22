@@ -38,6 +38,23 @@ public class KidnappedService implements AdventureService {
         }
     }
 
+    public String getGameMapFile() {
+        return gameMapFile;
+    }
+
+    public String getDatabaseUrl() {
+        return DATABASE_URL;
+    }
+
+    /**
+     * Determines the number of game engines running on this service.
+     *
+     * @return the number of games currently being run.
+     */
+    public int fetchNumberRunningGames() {
+        return gamesRunning.size();
+    }
+
     @Override
     public void reset() {
         gamesRunning = new ArrayList<>();
@@ -101,7 +118,7 @@ public class KidnappedService implements AdventureService {
     }
 
     @Override
-    public Map<String, Integer> fetchLeaderboard() {
+    public LinkedHashMap<String, Integer> fetchLeaderboard() {
         try {
             Statement statement = dbConnection.createStatement();
             statement.execute("SELECT * FROM leaderboard_aju3");
@@ -123,7 +140,7 @@ public class KidnappedService implements AdventureService {
      *
      * @return a sorted map of the leaderboard players.
      */
-    private Map<String, Integer> sortLeaderboard(ResultSet leaderboardItems) {
+    private LinkedHashMap<String, Integer> sortLeaderboard(ResultSet leaderboardItems) {
         Map<String, Integer> leaderboard = new HashMap<>();
 
         try {
